@@ -16,11 +16,12 @@ import java.io.IOException;
 
 
 
+
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import RaceAI.AI.MainAIa;
+import RaceAI.AI.MainAI;
 import _LoadResource.LoadResource;
 
 @SuppressWarnings("serial")
@@ -39,7 +40,7 @@ public class AIRaceClient extends JFrame implements Runnable, KeyListener,
 	private boolean btnOK, modeAI;
 	public Client cl;
 
-	MainAIa ai;
+	MainAI ai;
 
 	public AIRaceClient(final Client cl, boolean modeAI) {
 		this.cl = cl;
@@ -86,7 +87,7 @@ public class AIRaceClient extends JFrame implements Runnable, KeyListener,
 			keys[i] = false;
 		(new Thread(this)).start();
 		if (modeAI)
-			ai = new MainAIa(RwC.race, RwC.cars, RwC.Ccar);
+			ai = new MainAI(RwC.race, RwC.cars, RwC.Ccar);
 	}
 
 	class MyComponentListener implements ComponentListener {

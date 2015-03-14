@@ -1,6 +1,8 @@
 package RaceAI.AI;
 
 import java.awt.Point;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Random;
 import java.util.Vector;
 
@@ -23,7 +25,10 @@ public class MainAI {
 	/// Write your AI here ...
 	// your variants
 	Point last,now,next;
-	Random rand = new Random();
+	Hashtable<Integer, Integer> track = new Hashtable<Integer, Integer>();
+	int timeout=0;
+	boolean done = false;
+	
 	int[] ix = {0, 1, 0, -1};
 	int[] iy = {1, 0, -1, 0};
 	
@@ -34,9 +39,58 @@ public class MainAI {
 	// your AI
 	public void AI(){
 		// AI example
+		
+		/*
+		if(!done)
+		{
+			for (int i = 0; i < race.BlockRow(); i++) {
+				for (int j = 0; j < race.BlockColumn(); j++) {
+					System.out.print(race.BlockKind(i, j)+" ");
+				}
+				System.out.println();
+			}
+			done = true;
+		}
+		*/
+		
+		//if the car is freezed
+		if(lx == this.Mycar.getx() && ly==this.Mycar.gety())
+		{
+			timeout++;
+			if(timeout >= 500 && timeout <1000)
+			{
+				this.key = "0100";
+				System.out.println("go back");
+				return;
+			}
+			else if(timeout >= 1000 && timeout <1500)
+			{
+				this.key = "1000";
+				System.out.println("go ahead");
+				return;
+			}
+			else if(timeout >= 1500 && timeout <2000)
+			{
+				this.key = "0010";
+				System.out.println("turn left");
+				return;
+			}
+			else if(timeout >= 2000 && timeout <2500)
+			{
+				this.key = "0001";
+				System.out.println("turn right");
+				return;
+			}
+			else if(timeout >= 2500)
+			{
+				System.out.println(":(");
+			}
+		}
+		else timeout = 0;
 		//Block Index
 		int x = (int) (this.Mycar.getx() / this.race.BlockSize());
 		int y = (int) (this.Mycar.gety() / this.race.BlockSize());
+		
 		
 		double speed_now = Math.sqrt((this.Mycar.getx()-lx)*(this.Mycar.getx()-lx)+(this.Mycar.gety()-ly)*(this.Mycar.gety()-ly));
 		speed = (speed*2+speed_now)/3;
@@ -75,12 +129,12 @@ public class MainAI {
 			c_y/=distance2center;
 		}
 		
-		
+		//decide
 		if (distance2center<this.race.BlockSize()*0.2){
 			this.key = "0000"; //stop
 			// find new next block
 			boolean find=false;
-			{
+			/*{
 				int temp;
 				int i1=rand.nextInt(4);
 				int i2=rand.nextInt(4);
@@ -91,14 +145,17 @@ public class MainAI {
 				iy[i1] = iy[i2];
 				iy[i2] = temp;
 				
-			}
+			}*/
 			int i;
 			for (i=0;i<4;i++)
 				if ((last.x!=x+ix[i] || last.y!=y+iy[i]) && this.race.BlockKind(x+ix[i], y+iy[i]) !='1'){
 					find = true;
 					break;
 				}
-			if (find) this.next = new Point(x+ix[i], y+iy[i]);
+			if (find) {
+				this.next = new Point(x+ix[i], y+iy[i]);
+				
+			}
 			else this.next = this.last;
 			this.last = this.now;
 		}
@@ -122,5 +179,9 @@ public class MainAI {
 				}
 			}
 		}
+	}
+	private int position(int x, int y)
+	{
+		return x*1000+y;
 	}
 }
